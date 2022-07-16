@@ -1,4 +1,9 @@
 version: '3'
+volumes:
+  redis_data:
+    driver: local
+  postgres_data:
+    driver: local
 services:
   postgres:
     image: postgres
@@ -11,4 +16,13 @@ services:
       POSTGRES_DB: demo
       PGDATA: '/data/postgres'
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+  redis:
+    image: docker.io/bitnami/redis:7.0
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    ports:
+      - '6379:6379'
+    volumes:
+      - 'redis_data:/bitnami/redis/data'
